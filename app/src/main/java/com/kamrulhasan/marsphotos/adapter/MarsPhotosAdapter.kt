@@ -1,20 +1,24 @@
 package com.kamrulhasan.marsphotos.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.kamrulhasan.marsphotos.R
 import com.kamrulhasan.marsphotos.model.MarsPhotos
-import com.kamrulhasan.marsphotos.viewmodel.MarsPhotosViewModel
+
+private const val TAG = "MarsPhotosAdapter"
 
 class MarsPhotosAdapter(
-    private val context: Context, private val viewModel: MarsPhotosViewModel)
+    private val context: Context, private val listData: List<MarsPhotos> )
     : RecyclerView.Adapter<MarsPhotosAdapter.MarsPhotoHolder>(){
 
-    private var liveData = emptyList<MarsPhotos>()
+//    private var liveData = emptyList<MarsPhotos>()
 
     class MarsPhotoHolder(binding: View) : RecyclerView.ViewHolder(binding.rootView){
         val img_holder = binding.findViewById<ImageView>(R.id.iv_mars_photo)
@@ -26,11 +30,25 @@ class MarsPhotosAdapter(
     }
 
     override fun onBindViewHolder(holder: MarsPhotoHolder, position: Int) {
-        holder.img_holder.setImageResource(R.drawable.ic_launcher_foreground)
+        val item = listData[position]
+//        holder.img_holder.setImageResource(R.drawable.ic_launcher_foreground)
+        Log.d(TAG, "onBindViewHolder: called")
+        Glide
+            .with(holder.itemView.context)
+            .load(item.imgSrcUrl)
+            .centerCrop()
+            .into(holder.img_holder)
+//            .placeholderDrawable(R.drawable.ic_baseline_change_circle_24)
+        holder.itemView.setOnClickListener {
+            Toast.makeText(context,"position is ${position + 1}", Toast.LENGTH_SHORT).show()
+
+        }
     }
 
     override fun getItemCount(): Int {
-        return 5
+        Log.d(TAG, "getItemCount: called  ${listData.size}")
+
+        return listData.size
     }
 
 }
